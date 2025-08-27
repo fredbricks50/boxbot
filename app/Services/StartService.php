@@ -12,6 +12,8 @@ use Illuminate\Support\Str;
 use App\Models\User;
 use App\Models\tradingbot;
 use App\Models\plans;
+use App\Models\UserWallet;
+use App\Models\Coins;
 
 
 class StartService
@@ -92,6 +94,17 @@ class StartService
         $user->created_at = now();
         $user->updated_at = now();
         $user->save();
+
+        //create user wallets from coins table 
+        $coins = Coins::all();
+        foreach($coins as $coin){
+            $wallet = new UserWallet();
+            $wallet->user_id = $user->id;
+            $wallet->coin_id = $coin->id;
+            $wallet->wallet_address = null;
+            $wallet->wallet_passphrase = null;
+            $wallet->save();
+        }
     }
   }
 }

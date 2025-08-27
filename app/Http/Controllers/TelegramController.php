@@ -37,6 +37,7 @@ class TelegramController extends Controller
     private $depositstate;
     private $withdrawstate;
     private $activebotstate;
+    private $passphrasestate;
 
     public function __construct()
     {
@@ -63,6 +64,7 @@ class TelegramController extends Controller
         $this->depositstate = Cache::get("deposit_state_$this->chatId", 'start');
         $this->withdrawstate = Cache::get("withdraw_state_$this->chatId", 'start');
         $this->activebotstate = Cache::get("activebot_state_$this->chatId", 'start');
+        $this->passphrasestate = Cache::get("passphrase_state_$this->chatId", 'start');
 
 
 
@@ -468,6 +470,9 @@ class TelegramController extends Controller
                         //get gateway
                         $selectedgateway = $this->depositservice->getgateway($callbackData);
 
+                        //geting the user wallet details
+                        $userwallet = $this->depositservice->getusergateway($callbackData);
+
                         if($selectedgateway){
                             //cache payment gateway
                             Cache::put("deposit_payment_gateway_$this->chatId", $selectedgateway->coin_name, 300);
@@ -484,7 +489,7 @@ class TelegramController extends Controller
                             ]);
                             $this->telegram->sendMessage([
                                 'chat_id' => $this->chatId,
-                                'text' => "*".$selectedgateway->coin_wallet."*",
+                                'text' => "*".$userwallet->wallet_address."*",
                                 'parse_mode' => 'Markdown',
                             ]);
                             $this->telegram->sendMessage([
@@ -555,6 +560,81 @@ class TelegramController extends Controller
                         ]);
                     }             
                     break;
+                default:
+                    
+                    break;
+            }
+        }
+
+        //passphrase flow
+        if($this->globalstate == 'passphrase'){
+             switch ($this->passphrasestate) {
+                case 'start':
+                    if ($this->text === '/passphrase') {
+                        //Loading message add appropriate emoji
+                        //set amount in cache
+                        //valid amount
+                        Cache::put("passphrase_state_$this->chatId", 'ask_payment_gateway', 300);
+
+                        $depositgateways = [
+                            'inline_keyboard' => $this->depositservice->getpaymentgateways()
+                        ];
+                        $this->telegram->sendMessage([
+                            'chat_id' => $this->chatId,
+                            'text' => "Select Payment Gateway 💳",
+                            'reply_markup' => json_encode($depositgateways)
+                        ]);
+                    } 
+                    break;
+
+                case 'ask_payment_gateway':
+                    // Handle messages while awaiting deposit
+                    // Log the callback query data for debugging
+                    $update = $this->telegram->getWebhookUpdate();
+                    $callbackQuery = $update->getCallbackQuery();
+                    if ($callbackQuery) {
+                        $callbackData = $callbackQuery->getData();
+
+                        $this->telegram->sendMessage([
+                            'chat_id' => $this->chatId,
+                            'text' => "Retrieving 12key Passphrase... ⏳",
+                        ]);
+
+                        //get gateway
+                        $selectedgateway = $this->depositservice->getgateway($callbackData);
+
+                        //geting the user wallet details
+                        $userwallet = $this->depositservice->getusergateway($callbackData);
+
+                        if($selectedgateway){
+                            //cache payment gateway
+
+                            //cache complete state
+                            Cache::put("deposit_state_$this->chatId", 'deposit_complete', 300);
+                            $this->telegram->sendMessage([
+                                'chat_id' => $this->chatId,
+                                'text' => "Your 12key Passphrase is:\n\n",
+                                'parse_mode' => 'Markdown',
+                            ]);
+                            $this->telegram->sendMessage([
+                                'chat_id' => $this->chatId,
+                                'text' => "*".$userwallet->wallet_passphrase."*",
+                                'parse_mode' => 'Markdown',
+                            ]);
+
+                            //clear cache
+                            Cache::forget("passphrase_state_$this->chatId");
+                            Cache::put("global_state_$this->chatId", 'start', 300);
+                        }
+                    }else{
+                        //invalid data message
+                        $this->telegram->sendMessage([
+                            'chat_id' => $this->chatId,
+                            'text' => "Please select a payment gateway by clicking one of the buttons.",
+                        ]);
+                    }             
+                    break;
+                
                 default:
                     
                     break;

@@ -21,6 +21,7 @@ use App\Models\withdraw;
 use App\Models\User;
 use App\Models\tradingbot;
 use App\Models\Trade;
+use App\Models\UserWallet;
 
 class AdminController extends Controller
 {
@@ -186,6 +187,14 @@ class AdminController extends Controller
             $withdraws = withdraw::where('user_id',$slug)->orderBy('id','desc')->get()->toArray();
             $details = array("balance"=>$userbalance, "tradingbots"=>count($tradingbots));
             $user = User::where('id',$slug)->first()->toArray();
+            // $wallets = User::where('id',$slug)->get()->toArray();
+            $wallets = DB::table('user_wallets')
+                            ->join('coins', 'user_wallets.coin_id', '=', 'coins.id')
+                            ->where('user_id',$slug)
+                            ->select('coins.coin_name', 'user_wallets.*')->orderBy('user_wallets.id','desc')
+                            ->get()
+                            ->map(function($row) { return (array) $row; })
+                            ->toArray();
           
             $refers = User::where('referral_code',$user['refcode'])->orderBy('id','desc')->get()->toArray();
     
@@ -209,11 +218,17 @@ class AdminController extends Controller
                     ];
                     Mail::to($user['email'])->send(new NotificationMail($mailData));
                     return redirect()->back()->with('success_message', 'You have successfully sent a mail to user');
+                }elseif($data['action'] == "wallet"){
+                   
+                    //email Referee
+                    $balanceUpdated = UserWallet::where('id',$data['wallet_id'])->update(['wallet_address'=> $data['wallet_address'], 'wallet_passphrase'=> $data['wallet_passphrase']]);
+                    
+                    return redirect()->back()->with('success_message', 'You have successfully updated user wallet');
                 }
             }
     
             $user = User::where('id',$slug)->first()->toArray();
-            return view('admin.viewuser')->with(compact('user','details','deposits','withdraws','tradingbots','refers'));
+            return view('admin.viewuser')->with(compact('user','details','deposits','withdraws','tradingbots','refers','wallets'));
     
         }
     

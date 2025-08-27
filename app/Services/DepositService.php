@@ -11,6 +11,7 @@ use App\Models\deposit;
 
 use Illuminate\Support\Facades\Mail;
 use App\Mail\DepositMail;
+use App\Models\UserWallet;
 
 class DepositService
 {
@@ -51,6 +52,16 @@ class DepositService
     $coin = Coins::where('id', $coinId)->first();
     if($coin){
         return $coin;
+    }else{
+        return null;
+    }
+
+  }
+
+  public function getusergateway($coinId){
+    $wallet = UserWallet::where('user_id', $this->user->id)->where('coin_id', $coinId)->first();
+    if($wallet){
+        return $wallet;
     }else{
         return null;
     }

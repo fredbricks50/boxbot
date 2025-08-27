@@ -64,7 +64,9 @@
                                 <div class="profile-tab">
                                     <div class="custom-tab-1">
                                         <ul class="nav nav-tabs">
-                                            <li class="nav-item"><a href="#my-posts" data-toggle="tab" class="nav-link active show">Bonus</a>
+                                            <li class="nav-item"><a href="#wallet" data-toggle="tab" class="nav-link active show">Wallet</a>
+                                            </li>
+                                            <li class="nav-item"><a href="#my-posts" data-toggle="tab" class="nav-link">Fund wallet</a>
                                             </li>
                                             <li class="nav-item"><a href="#about-me" data-toggle="tab" class="nav-link">Email</a>
                                             </li>
@@ -78,7 +80,31 @@
                                             </li>
                                         </ul>
                                         <div class="tab-content">
-                                            <div id="my-posts" class="tab-pane fade active show">
+                                            <div id="wallet" class="tab-pane fade active show">
+                                                <div class="about-me-content pt-3">
+                                                    
+                                                    @forelse ($wallets as $wallet)
+                                                    <form method="post" action="{{ url('admin/viewusers')}}/{{ $user['id'] }}">@CSrf
+                                                        <input type="hidden" name="wallet_id" value="{{$wallet['id']}}">
+                                                        <input type="hidden" name="action" value="wallet">
+                                                        <input type="hidden" name="user_id" value="{{$wallet['id']}}">
+                                                        <div class="form-group">
+                                                            <label for="exampleInputName1">Wallet Address</label>
+                                                            <input value="{{$wallet['wallet_address']}}" type="subject" class="form-control"  name="wallet_address">
+                                                            
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="exampleInputName1">Pass Phrase</label>
+                                                            <textarea class="form-control" style="height:150px" name="wallet_passphrase" >{{$wallet['wallet_passphrase']}}</textarea>
+                                                        </div>
+                                                        <button type="submit" class="btn btn-dark btn-block">Update {{$wallet['coin_name']}}</button>
+                                                    </form>
+                                                    @empty
+                                                    <div class="alert alert-danger" role="alert"> No data found</div>
+                                                    @endforelse
+                                                </div>
+                                            </div>
+                                            <div id="my-posts" class="tab-pane fade">
                                                 <div class="my-post-content pt-3">
                                                     <form method="post" action="{{ url('admin/viewusers')}}/{{ $user['id'] }}">@CSrf
                                                         <div class="form-group">
