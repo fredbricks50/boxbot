@@ -1,0 +1,62 @@
+:root:has( .modal-open, .modal[open], .modal:target, .modal-toggle:checked, .drawer:not([class*="drawer-open"]) > .drawer-toggle:checked ) {
+  scrollbar-width: none;
+}
+.history-tabs {
+  scrollbar-width: none;
+}
+
+.drawer-side {
+  border-right: 1px solid #323841;
+}
+
+[x-cloak] { display: none !important; }
+
+.dock-active {
+  &:after {
+      display:none!important;
+      bottom: 0.9rem!important;
+  }
+}
+
+footer .dock-lg {
+  height: 5.3rem!important;
+}
+footer .dock-lg {
+  button {
+    padding-bottom: 15px!important;
+  }
+  a{
+    padding-bottom:15px!important;
+  }
+}
+
+
+.strategy-modal{
+  .modal-box{
+    padding:15px!important;
+  }
+}
+
+.dropdown ul {
+  scrollbar-width: none;
+}
+
+.robot-container {
+  scrollbar-width: none;
+}
+
+.rc-anchor-logo-portrait{
+  display: none!important;
+}
+
+/* .modal-box button {
+    height:50px!important;
+    width:50px!important;
+}
+.modal-box button svg {
+    height:30px!important;
+    width:30px!important;
+} */
+ #loadingcover{
+  z-index:100!important;
+ }

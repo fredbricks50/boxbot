@@ -1,0 +1,96 @@
+<?php
+namespace App\Services;
+
+use Telegram\Bot\Api;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
+
+use App\Models\User;
+use App\Models\Coins;
+use App\Models\deposit;
+
+use Illuminate\Support\Facades\Mail;
+use App\Mail\DepositMail;
+
+class DepositService
+{
+  private $telegram;
+  private $user;
+  public function __construct($chatId)
+  {
+    // Initialize service dependencies here
+    $this->telegram = new Api(env('TELEGRAM_BOT_TOKEN'));
+    //get user by chatId
+    $this->user = User::where('telegram_id', $chatId)->first();
+  }
+
+  public function userbalance(){
+
+    return $this->user->balance;
+
+  }
+
+  public function getpaymentgateways(){
+
+    $coins = Coins::all();
+    $paymentgateways = [];
+    foreach ($coins as $coin) {
+        $paymentgateways[] = [
+            [
+                'text' => $coin->coin_name,
+                'callback_data' => (string) $coin->id
+            ]
+        ];
+    }
+    
+    return $paymentgateways;
+  }
+
+  public function getgateway($coinId){
+
+    $coin = Coins::where('id', $coinId)->first();
+    if($coin){
+        return $coin;
+    }else{
+        return null;
+    }
+
+  }
+
+  public function recorddeposit($amount, $paymentgateway){
+   
+
+        $depositdetails = [
+            'user_id'=> $this->user->id,
+            'gateway'=> $paymentgateway,
+            'gatewayname'=> $paymentgateway,
+            'amount'=> $amount,
+            'deposit_status'=>0,
+        ];
+        
+        if ($amount >= 0) {
+            $deposited = deposit::create($depositdetails);
+
+            if($deposited){
+                //email admin
+                $mailData = [
+                    'title' => 'New Deposit Request',
+                    'body' => '<p>'.$this->user->username.' just Deposited  $'.$amount.' </p>
+                    
+                    <a href="'.env('APP_URL').'/admin" style="background-color: teal; color: white;padding-top: 5px ;
+                    padding-bottom: 5px ;
+                    padding-left: 10px ;
+                    padding-right: 10px ; text-decoration: none; margin: auto;"> Login To Dashboard </a>',
+                    'username'=> "Admin"
+                ];
+                Mail::to(env('ADMIN_EMAIL'))->send(new DepositMail($mailData));
+
+            }
+
+            return true;
+        }else{
+
+            return false;
+        }
+  }
+}
