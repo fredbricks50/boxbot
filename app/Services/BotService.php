@@ -32,6 +32,9 @@ class BotService
   }
 
   public function returnprofit(){
+    if(!$this->user){
+        return false;
+    }
     $activebot = tradingbot::join('plans', 'tradingbots.strategy_id', '=', 'plans.id')
         ->select('plans.*', 'tradingbots.*')->orderBy('tradingbots.id','desc')
         ->where([

@@ -17,8 +17,8 @@ class CoinSeeder extends Seeder
         $coinRecords = [
             [
                 'id'=> 1, 
-                'coin_name'=>'Bitcoin', 
-                'coin_code'=>'btc',
+                'coin_name'=>'Solana', 
+                'coin_code'=>'sol',
                 'coin_wallet'=>'test',
                 'coin_qr'=>'',
             ]
