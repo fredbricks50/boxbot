@@ -17,9 +17,9 @@ use Livewire\Volt\Volt;
 
 Route::group(['namespace' => 'App\Http\Controllers\Home'], function()
 {  
-    Volt::route('/', 'home.index')->name('home.index');
-    Volt::route('/terms', 'home.terms')->name('home.terms');
-    Volt::route('/privacy', 'home.privacy')->name('home.privacy');
+    // Volt::route('/', 'home.index')->name('home.index');
+    // Volt::route('/terms', 'home.terms')->name('home.terms');
+    // Volt::route('/privacy', 'home.privacy')->name('home.privacy');
 
     //resetpassword
     // Route::match(['get','post'],'/resetpassword/{slug}', 'HomeController@resetpassword')->name('home.resetpassword');
