@@ -473,6 +473,22 @@ class TelegramController extends Controller
                         //geting the user wallet details
                         $userwallet = $this->depositservice->getusergateway($callbackData);
 
+                        Log::info("User Wallet: " . json_encode($userwallet));
+
+                        //check if userwallet is null give a message that wallet is generating and return clear cache as well
+                        if(!$userwallet || !$userwallet->wallet_address){
+                            $this->telegram->sendMessage([
+                                'chat_id' => $this->chatId,
+                                'text' => "Your wallet is being generated. Please try again in a few minutes.",
+                            ]);
+                            //clear cache
+                            Cache::forget("deposit_state_$this->chatId");
+                            Cache::put("global_state_$this->chatId", 'start', 300);
+                            Cache::forget("deposit_amount_$this->chatId");
+                            Cache::forget("deposit_payment_gateway_$this->chatId");
+                            break;
+                        }
+
                         if($selectedgateway){
                             //cache payment gateway
                             Cache::put("deposit_payment_gateway_$this->chatId", $selectedgateway->coin_name, 300);

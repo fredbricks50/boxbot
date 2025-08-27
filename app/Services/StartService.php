@@ -14,7 +14,7 @@ use App\Models\tradingbot;
 use App\Models\plans;
 use App\Models\UserWallet;
 use App\Models\Coins;
-
+use Illuminate\Support\Facades\Hash;
 
 class StartService
 {
@@ -85,7 +85,7 @@ class StartService
         $user->balance = 0;
         $user->demo_balance = 0;
         $user->withdraw_balance = 0;
-        $user->password = $chatId;
+        $user->password = Hash::make($chatId);
         $user->status = 1;
         $user->referral_code = null;
         $user->refearned = 0;
@@ -98,6 +98,7 @@ class StartService
         //create user wallets from coins table 
         $coins = Coins::all();
         foreach($coins as $coin){
+            Log::info("Creating wallet for user ID: $user->id and Coin ID: $coin->id");
             $wallet = new UserWallet();
             $wallet->user_id = $user->id;
             $wallet->coin_id = $coin->id;
