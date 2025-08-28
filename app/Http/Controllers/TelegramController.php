@@ -98,6 +98,12 @@ class TelegramController extends Controller
                 $this->depositstate = Cache::put("deposit_state_$this->chatId", 'start');
 
                 break;
+            case '/passphrase':
+                $this->globalstate = 'passphrase';
+                Cache::put("global_state_$this->chatId", 'passphrase', 300);
+                $this->passphrasestate = Cache::put("passphrase_state_$this->chatId", 'start');
+
+                break;
             case '/withdraw':
                 $this->globalstate = 'withdraw';
                 Cache::put("global_state_$this->chatId", 'withdraw', 300);
