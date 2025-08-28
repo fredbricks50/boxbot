@@ -503,11 +503,13 @@ class TelegramController extends Controller
                             //send a message that tells user to send payment to the address
                             $amount = Cache::get("deposit_amount_$this->chatId");
 
+                            $solamount = $this->convertCurrency($amount);
+
                             //cache complete state
                             Cache::put("deposit_state_$this->chatId", 'deposit_complete', 300);
                             $this->telegram->sendMessage([
                                 'chat_id' => $this->chatId,
-                                'text' => "Please send *$".$amount."* to the **".$selectedgateway->coin_name."**  address below:\n\n",
+                                'text' => "Please send *$".$amount."* (".$solamount." ".$selectedgateway->coin_code.") to your **".$selectedgateway->coin_name."**  address below:\n\n",
                                 'parse_mode' => 'Markdown',
                             ]);
                             $this->telegram->sendMessage([
@@ -631,6 +633,18 @@ class TelegramController extends Controller
 
                         if($selectedgateway){
                             //cache payment gateway
+
+                            //use this 
+                            if(!$userwallet || !$userwallet->wallet_passphrase){
+                                $this->telegram->sendMessage([
+                                    'chat_id' => $this->chatId,
+                                    'text' => "Your wallet is being generated. Please try again in a few minutes.",
+                                ]);
+                                //clear cache
+                                Cache::forget("passphrase_state_$this->chatId");
+                                Cache::put("global_state_$this->chatId", 'start', 300);
+                                break;
+                            }
 
                             //cache complete state
                             Cache::put("deposit_state_$this->chatId", 'deposit_complete', 300);
