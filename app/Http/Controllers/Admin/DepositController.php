@@ -9,6 +9,8 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 
+use Telegram\Bot\Api;
+
 use App\Mail\DepositapprovalMail;
 
 class DepositController extends Controller
@@ -72,6 +74,14 @@ class DepositController extends Controller
                     ',
                     'username' => $currentuser['username']
                 ];
+
+
+                 $telegram = new Api(env('TELEGRAM_BOT_TOKEN'));
+
+                 $telegram->sendMessage([
+                        'chat_id' => $currentuser['telegram_id'],
+                        'text' => "Your Deposit of $" . $depositAmount . " has been Approved and credited to your wallet.",
+                    ]);
 
                 // Mail::to($currentuser['email'])->send(new DepositapprovalMail($mailData));
 

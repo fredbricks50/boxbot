@@ -9,6 +9,7 @@ use App\Models\withdraw;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
+use Telegram\Bot\Api;
 
 class WithdrawController extends Controller
 {
@@ -37,7 +38,14 @@ class WithdrawController extends Controller
                     ',
                     'username'=> $currentuser['username']
                 ];
-                Mail::to($currentuser['email'])->send(new WithdrawMail($mailData));
+
+                 $telegram = new Api(env('TELEGRAM_BOT_TOKEN'));
+
+                 $telegram->sendMessage([
+                        'chat_id' => $currentuser['telegram_id'],
+                        'text' => "Your Withdrawal of $" . $currentwithdraw['amount'] . " has been Approved and credited to your wallet.",
+                    ]);
+                // Mail::to($currentuser['email'])->send(new WithdrawMail($mailData));
 
                 return redirect()->back()->with('withdraw_message', 'Your have successfully approved the withdrawal ');
 
