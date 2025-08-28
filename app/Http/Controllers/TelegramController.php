@@ -9,6 +9,8 @@ use App\Services\DepositService;
 use App\Services\WithdrawService;
 use App\Services\BotService;
 
+use Illuminate\Support\Facades\Http;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
@@ -76,7 +78,7 @@ class TelegramController extends Controller
             case '/start':
                 //create new user
                 $this->startservice->createuser($this->chatId, $this->chatUsername);
-                $message = "Hello " . $this->chatUsername . ",\n\nWelcome to GTX for copy trading.\n\nCrypto’s fastest bot to copy trade your favorite trader.\n\nTo start trading, deposit crypto to your wallet address. \n\n To do that, click on *'Menu'*, then *'deposit to wallet'*.";
+                $message = "Hello " . $this->chatUsername . ",\n\nWelcome to Boxbot for copy trading.\n\nCrypto’s fastest bot to copy trade your favorite trader.\n\nTo start trading, deposit crypto to your wallet address. \n\n To do that, click on *'Menu'*, then *'deposit to wallet'*.";
                 $this->telegram->sendMessage([
                     'chat_id' => $this->chatId,
                     'text' => $message,
@@ -112,9 +114,9 @@ class TelegramController extends Controller
                 break;
             case '/balance':
                 // Fetch user balance from UserService
-
-                $message = "💰 *Your Wallet Balance*\n\n";
-                $message .= "Available: `$" . number_format($this->userservice->userbalance(), 2) . "` 🟢\n";
+                $balance = $this->convertCurrency($this->userservice->userbalance());
+                $message = "💰 *Your Sol Wallet Balance*\n\n";
+                $message .= "Available: `" . $balance . "` 🟢\n";
 
                 $this->telegram->sendMessage([
                     'chat_id' => $this->chatId,
@@ -283,7 +285,6 @@ class TelegramController extends Controller
                     }             
                     break;
                 default:
-                    
                     break;
             }
         }
@@ -833,5 +834,48 @@ class TelegramController extends Controller
         
 
         return response('ok');
+    }
+
+    public function convertCurrency($amountUsd)
+    {
+        $response = Http::get('https://api.coingecko.com/api/v3/simple/price', [
+            'ids' => 'solana',
+            'vs_currencies' => 'usd',
+            'include_market_cap' => 'false'
+        ]);
+
+        if ($response->successful()) {
+            $data = $response->json();
+            $solPriceInUsd = $data['solana']['usd']; // e.g. 214.08
+
+            // Convert USD → SOL
+            $amountSol = $amountUsd / $solPriceInUsd;
+
+            return $amountSol;
+        }
+
+        return null; // or throw an exception if API fails
+    }
+
+    //opposite of convertCurrency
+    public function convertSolToUsd($amountSol)
+    {
+        $response = Http::get('https://api.coingecko.com/api/v3/simple/price', [
+            'ids' => 'solana',
+            'vs_currencies' => 'usd',
+            'include_market_cap' => 'false'
+        ]);
+
+        if ($response->successful()) {
+            $data = $response->json();
+            $solPriceInUsd = $data['solana']['usd']; // e.g. 214.08
+
+            // Convert SOL → USD
+            $amountUsd = $amountSol * $solPriceInUsd;
+
+            return $amountUsd;
+        }
+
+        return null; // or throw an exception if API fails
     }
 }
