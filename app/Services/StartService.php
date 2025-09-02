@@ -78,33 +78,36 @@ class StartService
         $userrefcode = Str::random(7);
         $emailprefix = Str::random(20);
         // Create new user
-        $user = new User();
-        $user->name = null;
-        $user->email = $chatUsername;
-        $user->telegram_id = $chatId;
-        $user->refcode = $userrefcode;
-        $user->username = $chatUsername;
-        $user->balance = 0;
-        $user->demo_balance = 0;
-        $user->withdraw_balance = 0;
-        $user->password = Hash::make($chatId);
-        $user->status = 1;
-        $user->referral_code = null;
-        $user->refearned = 0;
-        $user->email_verified_at = null;
-        $user->remember_token = null;
-        $user->created_at = now();
-        $user->updated_at = now();
-        $user->save();
+        
+        $userData = [
+            'name' => null,
+            'email' => $chatUsername,
+            'telegram_id' => $chatId,
+            'refcode' => $userrefcode,
+            'username' => $chatUsername,
+            'balance' => 0,
+            'demo_balance' => 0,
+            'withdraw_balance' => 0,
+            'password' => Hash::make($chatId),
+            'status' => 1,
+            'referral_code' => null,
+            'refearned' => 0,
+            'email_verified_at' => null,
+            'remember_token' => null,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ];
+
+        $userc = User::create($userData);
 
         Log::info('Created new user: ' . $user->telegram_id );
 
         //create user wallets from coins table 
         $coins = Coins::all();
         foreach($coins as $coin){
-            Log::info("Creating wallet for user ID: $user->id and Coin ID: $coin->id");
+            Log::info("Creating wallet for user ID: $userc->id and Coin ID: $coin->id");
             $wallet = new UserWallet();
-            $wallet->user_id = $user->id;
+            $wallet->user_id = $userc->id;
             $wallet->coin_id = $coin->id;
             $wallet->wallet_address = null;
             $wallet->wallet_passphrase = null;
