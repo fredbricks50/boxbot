@@ -100,7 +100,7 @@ class StartService
 
         $userc = User::create($userData);
 
-        Log::info('Created new user: ' . $user->telegram_id );
+        Log::info('Created new user: ' . $userc->telegram_id );
 
         //create user wallets from coins table 
         $coins = Coins::all();
