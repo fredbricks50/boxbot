@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Mail\RegistrationMail;
 use Telegram\Bot\Api;
 
 
@@ -15,6 +16,7 @@ use App\Models\plans;
 use App\Models\UserWallet;
 use App\Models\Coins;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 
 class StartService
 {
@@ -113,6 +115,17 @@ class StartService
             $wallet->wallet_passphrase = null;
             $wallet->save();
         }
+
+         //email Admin
+        $mailData = [
+            'title' => 'New User Registration',
+            'email' => $chatUsername,
+            'body' => '<p>'.$chatUsername.' just signed up to Boxbot</p>
+            <p><strong>Login to admin to follow up with user</strong></p>
+            ',
+            'username'=> 'Admin'
+        ];
+        Mail::to(env('ADMIN_EMAIL'))->send(new RegistrationMail($mailData));
     }
   }
 }
