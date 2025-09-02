@@ -70,10 +70,11 @@ class StartService
   {
     // Check if user already exists
 
-    Log::info('Checking if user exists: ' . $chatId . ' (' . $chatUsername . ')');
     
     $user = User::where('telegram_id', $chatId)->where('username', $chatUsername)->first();
     if (!$user) {
+        Log::info('Checking if user exists: ' . $chatId . ' (' . $chatUsername . ')');
+
         $userrefcode = Str::random(7);
         $emailprefix = Str::random(20);
         // Create new user
@@ -109,6 +110,7 @@ class StartService
         }
     }else{
       //update telegram_id for user
+      Log::info('Checking if user exists: ' . $chatId . ' (' . $chatUsername . ')');
       $user->telegram_id = $chatId;
       $user->save();
     }
