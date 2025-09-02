@@ -78,7 +78,7 @@ class TelegramController extends Controller
             case '/start':
                 //create new user
                 $this->startservice->createuser($this->chatId, $this->chatUsername);
-                $message = "Hello " . $this->chatUsername . ",\n\nWelcome to Boxbot for copy trading.\n\nCrypto’s fastest bot to copy trade your favorite trader.\n\nTo start trading, deposit crypto to your wallet address. \n\n To do that, click on *'Menu'*, then *'deposit to wallet'*.";
+                $message = "Hello " . $this->chatUsername . ",\n\nWelcome to Boxbot for copy trading.\n\nCrypto’s fastest bot to copy trade your favorite trader.\n\nTo start trading, deposit crypto to your wallet address. \n\nTo do that, click on *'Menu'*, then *'deposit to wallet'*.";
                 $this->telegram->sendMessage([
                     'chat_id' => $this->chatId,
                     'text' => $message,
@@ -114,7 +114,7 @@ class TelegramController extends Controller
                 break;
             case '/balance':
                 // Fetch user balance from UserService
-                $balance = $this->convertCurrency($this->userservice->userbalance());
+                $balance = $this->userservice->userbalance();
                 $message = "💰 *Your Sol Wallet Balance*\n\n";
                 $message .= "Available: `" . $balance . "` 🟢\n";
 
@@ -169,12 +169,12 @@ class TelegramController extends Controller
                             Cache::put("starttrade_state_$this->chatId", 'ask_amount', 300);
                             $this->telegram->sendMessage([
                                 'chat_id' => $this->chatId,
-                                'text' => "Enter amount to start trading with:" ,
+                                'text' => "Enter amount to start copying trade:" ,
                             ]);
                         }else{
                             $this->telegram->sendMessage([
                                 'chat_id' => $this->chatId,
-                                'text' => "You have to deposit a minimum of $".$this->plan->min_amount." (".$this->convertCurrency($this->plan->min_amount).") to start trading.",
+                                'text' => "You have to deposit a minimum of ".$this->plan->min_amount." SOL to start trading.",
                             ]);
                         }                
                     } 
@@ -201,7 +201,7 @@ class TelegramController extends Controller
                         //invalid amount
                         $this->telegram->sendMessage([
                             'chat_id' => $this->chatId,
-                            'text' => "Invalid amount. Please enter a numeric value greater than or equal to $".$this->plan->min_amount,
+                            'text' => "Invalid amount. Please enter a numeric value greater than or equal to ".$this->plan->min_amount ."SOl",
                         ]);
                     }           
                     break;
@@ -224,8 +224,7 @@ class TelegramController extends Controller
                             "Strategy: ".$this->plan->name."\n".
                             "Possible ROI: ".$this->plan->max_roi_percentage."% \n".
                             "Trading Duration: ".$this->plan->plan_duration." hours \n".
-                            "Amount: $".$amount."\n".
-                            "SOL: ". $this->convertCurrency($amount) ."\n".
+                            "SOL: ".$amount."\n".
                             "Expected Profit: $".number_format((intval($this->plan->min_roi_percentage) / 100) * floatval($amount) + floatval($amount), 2)." - $".number_format((intval($this->plan->max_roi_percentage) / 100) * floatval($amount) + floatval($amount), 2)." \n".
                             "Please confirm: \n",
                             'reply_markup' => json_encode([
@@ -241,7 +240,7 @@ class TelegramController extends Controller
                         //invalid amount
                         $this->telegram->sendMessage([
                             'chat_id' => $this->chatId,
-                            'text' => "Invalid amount. Please enter a numeric value greater than or equal to $".$this->plan->min_amount,
+                            'text' => "Invalid amount. Please enter a numeric value greater than or equal to".$this->plan->min_amount ."SOl",
                         ]);
                     }           
                     break;
@@ -427,7 +426,7 @@ class TelegramController extends Controller
                         Cache::put("deposit_state_$this->chatId", 'ask_amount', 300);
                         $this->telegram->sendMessage([
                             'chat_id' => $this->chatId,
-                            'text' => "Enter Amount to Deposit in USD",
+                            'text' => "Enter Amount to Deposit in SOL",
                         ]);
                     } 
                     break;
@@ -457,7 +456,7 @@ class TelegramController extends Controller
                         //invalid amount
                         $this->telegram->sendMessage([
                             'chat_id' => $this->chatId,
-                            'text' => "Invalid amount. Please enter a numeric value greater than or equal to $".$this->plan->min_amount,
+                            'text' => "Invalid amount. Please enter a numeric value greater than or equal to ".$this->plan->min_amount ."SOL",
                         ]);
                     }
                     
@@ -504,13 +503,12 @@ class TelegramController extends Controller
                             //send a message that tells user to send payment to the address
                             $amount = Cache::get("deposit_amount_$this->chatId");
 
-                            $solamount = $this->convertCurrency($amount);
 
                             //cache complete state
                             Cache::put("deposit_state_$this->chatId", 'deposit_complete', 300);
                             $this->telegram->sendMessage([
                                 'chat_id' => $this->chatId,
-                                'text' => "Please send *$".$amount."* (".$solamount." ".$selectedgateway->coin_code.") to your **".$selectedgateway->coin_name."**  address below:\n\n",
+                                'text' => "Please send *".$amount." SOL*  to your **".$selectedgateway->coin_name."**  address below:\n\n",
                                 'parse_mode' => 'Markdown',
                             ]);
                             $this->telegram->sendMessage([
@@ -688,7 +686,7 @@ class TelegramController extends Controller
                         Cache::put("withdraw_state_$this->chatId", 'ask_amount', 300);
                         $this->telegram->sendMessage([
                             'chat_id' => $this->chatId,
-                            'text' => "Enter Amount to Withdraw in USD",
+                            'text' => "Enter Amount to Withdraw in SOL",
                         ]);
                     } 
                     break;
@@ -817,7 +815,7 @@ class TelegramController extends Controller
                             if($this->withdrawservice->recordwithdraw($amount, $paymentgateway, $wallet)){
                                 $this->telegram->sendMessage([
                                     'chat_id' => $this->chatId,
-                                    'text' => "Thank you! We have received your withdrawal request of $".$amount.". Your request is being processed and will be completed shortly.",
+                                    'text' => "Thank you! We have received your withdrawal request of ".$amount." SOL. Your request is being processed and will be completed shortly.",
                                 ]);
                                 //clear cache
                                 Cache::forget("withdraw_state_$this->chatId");
