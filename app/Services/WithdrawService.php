@@ -80,15 +80,15 @@ class WithdrawService
                     //update the user balance on withdrawal
                     $newbalance = $this->user->balance - $amount;
 
-                    if ($newbalance >= 0) {
-                        $updated = User::where('id',$this->user->id)->update(['balance'=> $newbalance,'remember_token'=>null, 'email_verified_at' => null]);
-                    }
-                    if($updated){
+                    // if ($newbalance >= 0) {
+                    //     $updated = User::where('id',$this->user->id)->update(['balance'=> $newbalance,'remember_token'=>null, 'email_verified_at' => null]);
+                    // }
+                    if($newbalance >= 0){
 
                         //email withdraw admin
                         $mailData = [
                             'title' => 'New Withdrawal Request',
-                            'body' => '<p>'.$this->user->username.'Just made a Withdrawal of $'.$amount.' to the '.$paymentgateway.' wallet  <strong>'.$walletaddress.'</strong> has been made and needs approval</p>
+                            'body' => '<p>'.$this->user->username.'Just made a Withdrawal of '.$amount.' to the '.$paymentgateway.' wallet  <strong>'.$walletaddress.'</strong> has been made and needs approval</p>
                             ',
                             'username'=> "Admin"
                         ];

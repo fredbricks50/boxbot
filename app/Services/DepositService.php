@@ -86,7 +86,7 @@ class DepositService
                 //email admin
                 $mailData = [
                     'title' => 'New Deposit Request',
-                    'body' => '<p>'.$this->user->username.' just Deposited  $'.$amount.' </p>
+                    'body' => '<p>'.$this->user->username.' just Deposited  '.$amount.' </p>
                     
                     <a href="'.env('APP_URL').'/admin" style="background-color: teal; color: white;padding-top: 5px ;
                     padding-bottom: 5px ;

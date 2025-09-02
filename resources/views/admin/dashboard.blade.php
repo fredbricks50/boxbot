@@ -105,8 +105,8 @@
                                             <tr>
                                                 <td>{{ $tradingbot->username}}</td>
                                                 <td>{{ $tradingbot->name}}</td>
-                                                <td>@money($tradingbot->amount)</td>
-                                                <td>@money($tradingbot->amount_earned)</td>
+                                                <td>{{$tradingbot->amount}}</td>
+                                                <td>{{$tradingbot->amount_earned}}</td>
                                                 <td>{{ $tradingbot->profit_limit_exceed}}</td>
                                                 <td>{{ $tradingbot->account_type}}</td>
                                                 <td> 

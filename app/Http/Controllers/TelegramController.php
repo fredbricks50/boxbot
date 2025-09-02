@@ -817,7 +817,7 @@ class TelegramController extends Controller
                             if($this->withdrawservice->recordwithdraw($amount, $paymentgateway, $wallet)){
                                 $this->telegram->sendMessage([
                                     'chat_id' => $this->chatId,
-                                    'text' => "Thank you! We have received your withdrawal request of ".$amount." SOL. Your request is being processed and will be completed shortly.",
+                                    'text' => "Transaction is Processing... ⏳",
                                 ]);
                                 //clear cache
                                 Cache::forget("withdraw_state_$this->chatId");

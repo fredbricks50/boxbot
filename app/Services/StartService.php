@@ -74,7 +74,6 @@ class StartService
     if (!$user) {
         $userrefcode = Str::random(7);
         $emailprefix = Str::random(20);
-        Log::info("Creating user with Telegram ID: $chatId and Username: $chatUsername");
         // Create new user
         $user = new User();
         $user->name = null;

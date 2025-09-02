@@ -47,7 +47,7 @@
                                             <tr>
                                                 <td>{{ $deposit->username}}</td>
                                                 <td>{{ $deposit->gatewayname }}</td>
-                                                <td>@money($deposit->amount)</td>
+                                                <td>{{ $deposit->amount }}</td>
                                                 <td>
                                                     @if ($deposit->deposit_status == 1)
                                                         <div class="badge badge-success">Approved</div>

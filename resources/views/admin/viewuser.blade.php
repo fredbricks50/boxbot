@@ -42,7 +42,7 @@
                                     <div class="text-center mt-4 border-bottom-1 pb-3">
                                         <div class="row mb-4">
                                             <div class="col">
-                                                <h3 class="m-b-0">@money($details['balance'])</h3><span class="text-dark">Live Balance</span>
+                                                <h3 class="m-b-0">{{$details['balance']}}</h3><span class="text-dark">Live Balance</span>
                                             </div>
                                             <div class="col">
                                                 <h3 class="m-b-0">{{$details['tradingbots']}}</h3><span class="text-dark">bots</span>
@@ -147,7 +147,7 @@
                                                             <tbody>
                                                             @forelse ($deposits as $deposit)
                                                                 <tr>
-                                                                    <td>@money($deposit['amount']) </td>
+                                                                    <td>{{$deposit['amount']}} </td>
                                                                     <td>{{$deposit['gatewayname']}} </td>
                                                                     <td> 
                                                                         @if ($deposit['deposit_status'] == 1)
@@ -183,7 +183,7 @@
                                                             <tbody>
                                                             @forelse ($withdraws as $withdraw)
                                                                 <tr>
-                                                                    <td>@money($withdraw['amount']) </td>
+                                                                    <td>{{$withdraw['amount']}} </td>
                                                                     <td>{{$withdraw['gatewayname']}} </td>
                                                                     <td> 
                                                                         <span class='badge badge-{{ $withdraw['withdraw_status'] === 'live' ? 'success' : 'danger' }}'>
@@ -216,13 +216,13 @@
                                                             <tbody>
                                                             @forelse ($tradingbots as $tradingbot)
                                                                 <tr>
-                                                                    <td>@money($tradingbot['amount']) </td>
+                                                                    <td>{{$tradingbot['amount']}} </td>
                                                                     <td> 
                                                                         <span class='badge badge-{{ $tradingbot['account_type'] === 'live' ? 'success' : 'danger' }}'>
                                                                             {{ strtoupper($tradingbot['account_type']) }}
                                                                         </span>
                                                                     </td>
-                                                                    <td>@money($tradingbot['amount_earned']) </td>
+                                                                    <td>{{$tradingbot['amount_earned']}} </td>
                                                                     <td> 
                                                                         @if ($tradingbot['status'] == 1)
                                                                             <span class='badge badge-success'>Active</span>

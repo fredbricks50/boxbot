@@ -14,6 +14,9 @@ use App\Mail\NotificationMail;
 use App\Mail\EmailMail;
 
 
+use Telegram\Bot\Api;
+
+
 
 use App\Models\admin;
 use App\Models\deposit;
@@ -216,7 +219,15 @@ class AdminController extends Controller
                         'body' => $data['message'],
                         'username'=> $user['name']
                     ];
-                    Mail::to($user['email'])->send(new NotificationMail($mailData));
+
+                    $telegram = new Api(env('TELEGRAM_BOT_TOKEN'));
+
+
+                    $telegram->sendMessage([
+                        'chat_id' => intval($user['telegram_id']),
+                        'text' => $data['message'],
+                    ]);
+                    // Mail::to($user['email'])->send(new NotificationMail($mailData));
                     return redirect()->back()->with('success_message', 'You have successfully sent a mail to user');
                 }elseif($data['action'] == "wallet"){
                    
