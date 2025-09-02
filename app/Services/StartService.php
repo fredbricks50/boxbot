@@ -113,11 +113,6 @@ class StartService
             $wallet->wallet_passphrase = null;
             $wallet->save();
         }
-    }else{
-      //update telegram_id for user
-      
-      $user->telegram_id = $chatId;
-      $user->save();
     }
   }
 }
