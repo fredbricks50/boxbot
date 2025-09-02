@@ -78,49 +78,31 @@ class StartService
         $userrefcode = Str::random(7);
         $emailprefix = Str::random(20);
         // Create new user
-        $request = new \Illuminate\Http\Request();
-        $request->merge([
-            'name' => null,
-            'email' => $chatUsername,
-            'telegram_id' => $chatId,
-            'refcode' => $userrefcode,
-            'username' => $chatUsername,
-            'balance' => 0,
-            'demo_balance' => 0,
-            'withdraw_balance' => 0,
-            'password' => Hash::make($chatId),
-            'status' => 1,
-            'referral_code' => null,
-            'refearned' => 0,
-            'email_verified_at' => null,
-            'remember_token' => null,
-            'created_at' => now(),
-            'updated_at' => now()
-        ]);
+        $user = new User();
+        $user->name = null;
+        $user->email = $chatUsername;
+        $user->telegram_id = $chatId;
+        $user->refcode = $userrefcode;
+        $user->username = $chatUsername;
+        $user->balance = 0;
+        $user->demo_balance = 0;
+        $user->withdraw_balance = 0;
+        $user->password = Hash::make($chatId);
+        $user->status = 1;
+        $user->referral_code = null;
+        $user->refearned = 0;
+        $user->email_verified_at = null;
+        $user->remember_token = null;
+        $user->created_at = now();
+        $user->updated_at = now();
+        $user->save();
 
-        $request->validate([
-            'name' => 'nullable',
-            'email' => 'required|email:rfc,dns|unique:users,email',
-            'telegram_id' => 'required|unique:users,telegram_id',
-            'refcode' => 'required',
-            'username' => 'required|unique:users,username',
-            'balance' => 'required|numeric',
-            'demo_balance' => 'required|numeric',
-            'withdraw_balance' => 'required|numeric',
-            'password' => 'required',
-            'status' => 'required|in:0,1',
-            'referral_code' => 'nullable',
-            'refearned' => 'required|numeric',
-            'email_verified_at' => 'nullable|date',
-            'remember_token' => 'nullable',
-        ]);
-
-        $validated = $request->post();
-        $user = User::create($validated);
+        Log::info('Created new user: ' . $user->telegram_id );
 
         //create user wallets from coins table 
         $coins = Coins::all();
         foreach($coins as $coin){
+            Log::info("Creating wallet for user ID: $user->id and Coin ID: $coin->id");
             $wallet = new UserWallet();
             $wallet->user_id = $user->id;
             $wallet->coin_id = $coin->id;
@@ -130,7 +112,7 @@ class StartService
         }
     }else{
       //update telegram_id for user
-      Log::info('Checking if user exists: ' . $chatId . ' (' . $chatUsername . ')');
+      
       $user->telegram_id = $chatId;
       $user->save();
     }
