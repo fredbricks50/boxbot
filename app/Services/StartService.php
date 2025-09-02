@@ -69,6 +69,8 @@ class StartService
   public function createuser($chatId, $chatUsername)
   {
     // Check if user already exists
+
+    Log::info('Checking if user exists: ' . $chatId . ' (' . $chatUsername . ')');
     
     $user = User::where('telegram_id', $chatId)->where('username', $chatUsername)->first();
     if (!$user) {
