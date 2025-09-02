@@ -70,7 +70,7 @@ class StartService
   {
     // Check if user already exists
     
-    $user = User::where('telegram_id', $chatId)->first();
+    $user = User::where('telegram_id', $chatId)->where('username', $chatUsername)->first();
     if (!$user) {
         $userrefcode = Str::random(7);
         $emailprefix = Str::random(20);
@@ -105,6 +105,10 @@ class StartService
             $wallet->wallet_passphrase = null;
             $wallet->save();
         }
+    }else{
+      //update telegram_id for user
+      $user->telegram_id = $chatId;
+      $user->save();
     }
   }
 }
