@@ -227,7 +227,7 @@ class TelegramController extends Controller
                             "Possible ROI: ".$this->plan->max_roi_percentage."% \n".
                             "Trading Duration: ".$this->plan->plan_duration." hours \n".
                             "SOL: ".$amount."\n".
-                            "Expected Profit: $".number_format((intval($this->plan->min_roi_percentage) / 100) * floatval($amount) + floatval($amount), 2)." - $".number_format((intval($this->plan->max_roi_percentage) / 100) * floatval($amount) + floatval($amount), 2)." \n".
+                            "Expected Profit: ".number_format((intval($this->plan->min_roi_percentage) / 100) * floatval($amount) + floatval($amount), 2)."SOL - ".number_format((intval($this->plan->max_roi_percentage) / 100) * floatval($amount) + floatval($amount), 2)."SOL \n".
                             "Please confirm: \n",
                             'reply_markup' => json_encode([
                                     'inline_keyboard' => [[
