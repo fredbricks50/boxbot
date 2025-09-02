@@ -27,7 +27,7 @@ class StartService
     // Initialize service dependencies here
     $this->telegram = new Api(env('TELEGRAM_BOT_TOKEN'));
     //get user by chatId
-    $this->user = User::where('telegram_id', $chatId)->first();
+    $this->user = User::where('telegram_id', (string) $chatId)->first();
   }
 
   public function handle()
@@ -73,7 +73,7 @@ class StartService
     // Check if user already exists
 
     
-    $user = User::where('telegram_id', $chatId)->where('username', $chatUsername)->first();
+    $user = User::where('telegram_id',(string) $chatId)->first();
     if (!$user) {
         Log::info('Checking if user exists: ' . $chatId . ' (' . $chatUsername . ')');
 
@@ -90,7 +90,7 @@ class StartService
             'balance' => 0,
             'demo_balance' => 0,
             'withdraw_balance' => 0,
-            'password' => Hash::make($chatId),
+            'password' => Hash::make((string)$chatId),
             'status' => 1,
             'referral_code' => null,
             'refearned' => 0,

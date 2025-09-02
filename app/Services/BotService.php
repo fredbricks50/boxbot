@@ -27,7 +27,7 @@ class BotService
     // Initialize service dependencies here
     $this->telegram = new Api(env('TELEGRAM_BOT_TOKEN'));
     //get user by chatId
-    $this->user = User::where('telegram_id', $chatId)->first();
+    $this->user = User::where('telegram_id', (string) $chatId)->first();
 
   }
 
