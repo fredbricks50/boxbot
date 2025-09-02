@@ -82,7 +82,7 @@ class StartService
         $userData = [
             'name' => null,
             'email' => $chatUsername,
-            'telegram_id' => $chatId,
+            'telegram_id' => (string) $chatId,
             'refcode' => $userrefcode,
             'username' => $chatUsername,
             'balance' => 0,
