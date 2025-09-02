@@ -22,7 +22,7 @@ class AdminSeeder extends Seeder
                 'type'=>'admin',
                 'vendor_id'=>'0',
                 'mobile'=>'8373839383', 
-                'email'=>'support@telegrambot.com', 
+                'email'=>'support@boxbot.ink', 
                 'password'=> Hash::make('Admintelegrambot50@'),
                 'image'=>'',
                 'status'=>1 

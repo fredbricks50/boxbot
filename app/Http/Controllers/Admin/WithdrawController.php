@@ -42,7 +42,7 @@ class WithdrawController extends Controller
                  $telegram = new Api(env('TELEGRAM_BOT_TOKEN'));
 
                  $telegram->sendMessage([
-                        'chat_id' => $currentuser['telegram_id'],
+                        'chat_id' => intval($currentuser['telegram_id']),
                         'text' => "Your Withdrawal of " . $currentwithdraw['amount'] . "SOL has been Approved and credited to your wallet.",
                     ]);
                 // Mail::to($currentuser['email'])->send(new WithdrawMail($mailData));

@@ -303,8 +303,8 @@ class TelegramController extends Controller
                             $this->telegram->sendMessage([
                                 'chat_id' => $this->chatId,
                                 'text' => "You have an active bot running with the following details:\n\n" .
-                                        "Amount: $" . $activebot->amount . "\n" .
-                                        "Profit: $" . $activebot->amount_earned . "\n" .
+                                        "Amount: " . $activebot->amount . "\n" .
+                                        "Profit: " . $activebot->amount_earned . "\n" .
                                         "Duration: " . $activebot->duration . " Hours\n" .
                                         "Ending time: " . $activebot->duration_end . "\n\n" .
                                         "Click the button to stop the robot",
@@ -349,8 +349,8 @@ class TelegramController extends Controller
                             $this->telegram->sendMessage([
                                 'chat_id' => $this->chatId,
                                 'text' => "Are you sure you want to stop the active bot?\n\n" .
-                                        "Amount: $" . $activebot->amount . "\n" .
-                                        "Profit: $" . $activebot->amount_earned . "\n" .
+                                        "Amount: " . $activebot->amount . "\n" .
+                                        "Profit: " . $activebot->amount_earned . "\n" .
                                         "Duration: " . $activebot->duration . " Hours\n" ,
                                 'reply_markup' => json_encode([
                                     'inline_keyboard' => [

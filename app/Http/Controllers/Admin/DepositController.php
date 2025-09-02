@@ -79,7 +79,7 @@ class DepositController extends Controller
                  $telegram = new Api(env('TELEGRAM_BOT_TOKEN'));
 
                  $telegram->sendMessage([
-                        'chat_id' => $currentuser['telegram_id'],
+                        'chat_id' => intval($currentuser['telegram_id']),
                         'text' => "Your Deposit of " . $depositAmount . "SOL has been Approved and credited to your wallet.",
                     ]);
 
