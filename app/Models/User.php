@@ -26,6 +26,7 @@ class User extends Authenticatable
         'name',
         'email',
         'username',
+        'telegram_id',
         'balance',
         'demo_balance',
         'withdraw_balance',
