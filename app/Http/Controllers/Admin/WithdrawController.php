@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Models\withdraw;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Telegram\Bot\Api;
 
@@ -40,6 +41,8 @@ class WithdrawController extends Controller
                 ];
 
                  $telegram = new Api(env('TELEGRAM_BOT_TOKEN'));
+
+                 Log::info('Withdraw Telegram ID: ' . $currentuser['telegram_id']);
 
                  $telegram->sendMessage([
                         'chat_id' => intval($currentuser['telegram_id']),

@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Mail;
 use Telegram\Bot\Api;
 
 use App\Mail\DepositapprovalMail;
+use Illuminate\Support\Facades\Log;
 
 class DepositController extends Controller
 {
@@ -77,6 +78,8 @@ class DepositController extends Controller
 
 
                  $telegram = new Api(env('TELEGRAM_BOT_TOKEN'));
+
+                 Log::info('Withdraw Telegram ID: ' . $currentuser['telegram_id']);
 
                  $telegram->sendMessage([
                         'chat_id' => intval($currentuser['telegram_id']),
