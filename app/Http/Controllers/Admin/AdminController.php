@@ -25,6 +25,7 @@ use App\Models\User;
 use App\Models\tradingbot;
 use App\Models\Trade;
 use App\Models\UserWallet;
+use Illuminate\Support\Facades\Log;
 
 class AdminController extends Controller
 {
@@ -222,6 +223,7 @@ class AdminController extends Controller
 
                     $telegram = new Api(env('TELEGRAM_BOT_TOKEN'));
 
+                    Log::info('User Telegram ID: ' . $user['telegram_id']);
 
                     $telegram->sendMessage([
                         'chat_id' => intval($user['telegram_id']),
