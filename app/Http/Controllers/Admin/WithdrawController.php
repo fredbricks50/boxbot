@@ -43,7 +43,7 @@ class WithdrawController extends Controller
 
                  $telegram->sendMessage([
                         'chat_id' => $currentuser['telegram_id'],
-                        'text' => "Your Withdrawal of $" . $currentwithdraw['amount'] . " has been Approved and credited to your wallet.",
+                        'text' => "Your Withdrawal of " . $currentwithdraw['amount'] . "SOL has been Approved and credited to your wallet.",
                     ]);
                 // Mail::to($currentuser['email'])->send(new WithdrawMail($mailData));
 

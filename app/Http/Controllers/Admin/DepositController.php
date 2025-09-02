@@ -80,7 +80,7 @@ class DepositController extends Controller
 
                  $telegram->sendMessage([
                         'chat_id' => $currentuser['telegram_id'],
-                        'text' => "Your Deposit of $" . $depositAmount . " has been Approved and credited to your wallet.",
+                        'text' => "Your Deposit of " . $depositAmount . "SOL has been Approved and credited to your wallet.",
                     ]);
 
                 // Mail::to($currentuser['email'])->send(new DepositapprovalMail($mailData));
