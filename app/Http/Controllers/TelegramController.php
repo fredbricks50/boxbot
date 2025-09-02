@@ -113,6 +113,8 @@ class TelegramController extends Controller
 
                 break;
             case '/balance':
+                //global state
+                $this->globalstate = Cache::get("global_state_$this->chatId", 'start');
                 // Fetch user balance from UserService
                 $balance = $this->userservice->userbalance();
                 $message = "💰 *Your Sol Wallet Balance*\n\n";
