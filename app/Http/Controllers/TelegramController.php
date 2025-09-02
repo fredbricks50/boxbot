@@ -77,6 +77,7 @@ class TelegramController extends Controller
         switch ($this->text) {
             case '/start':
                 //create new user
+                Log::info('New user: ' . $this->chatId);
                 $this->startservice->createuser($this->chatId, $this->chatUsername);
                 $message = "Hello " . $this->chatUsername . ",\n\nWelcome to Boxbot for copy trading.\n\nCrypto’s fastest bot to copy trade your favorite trader.\n\nTo start trading, deposit crypto to your wallet address. \n\nTo do that, click on *'Menu'*, then *'deposit to wallet'*.";
                 $this->telegram->sendMessage([
