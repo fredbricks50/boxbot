@@ -47,16 +47,16 @@ class TelegramController extends Controller
         $update = $this->telegram->getWebhookUpdate();
         $message = $update->getMessage();
         
-        $this->chatId = $message->getChat()->getId();
+        $this->chatId =(string) $message->getChat()->getId();
         $this->chatUsername = $message->getFrom()->getUsername() ?: $message->getFrom()->getFirstName();
         $this->text = $message->getText();
-        $this->startservice = new StartService($this->chatId);
+        $this->startservice = new StartService((string) $this->chatId);
         $this->plan = plans::where('order', 1)->first();
 
-        $this->userservice = new UserService($this->chatId);
-        $this->depositservice = new DepositService($this->chatId);
-        $this->withdrawservice = new WithdrawService($this->chatId);
-        $this->botservice = new BotService($this->chatId);
+        $this->userservice = new UserService((string)$this->chatId);
+        $this->depositservice = new DepositService((string) $this->chatId);
+        $this->withdrawservice = new WithdrawService((string) $this->chatId);
+        $this->botservice = new BotService((string) $this->chatId);
 
         //global state
         $this->globalstate = Cache::get("global_state_$this->chatId", 'start');
@@ -77,7 +77,7 @@ class TelegramController extends Controller
         switch ($this->text) {
             case '/start':
                 //create new user
-                Log::info('New user: ' . $this->chatId);
+                Log::info('New user: ' . (string) $this->chatId);
                 $this->startservice->createuser($this->chatId, $this->chatUsername);
                 $message = "Hello " . $this->chatUsername . ",\n\nWelcome to Boxbot for copy trading.\n\nCrypto’s fastest bot to copy trade your favorite trader.\n\nTo start trading, deposit crypto to your wallet address. \n\nTo do that, click on *'Menu'*, then *'deposit to wallet'*.";
                 $this->telegram->sendMessage([
@@ -115,12 +115,14 @@ class TelegramController extends Controller
                 break;
             case '/balance':
                 //global state
-                $this->globalstate = 'start';
-                Cache::put("global_state_$this->chatId", 'start', 300);
+                // $this->globalstate = 'start';
+                // Cache::put("global_state_$this->chatId", 'start', 300);
                 // Fetch user balance from UserService
                 $balance = $this->userservice->userbalance();
+                $safeBalance = str_replace(['*', '_', '`'], '', $balance);
+
                 $message = "💰 *Your Sol Wallet Balance*\n\n";
-                $message .= "Available: `" . $balance . "` 🟢\n";
+                $message .= "Available: `" . $safeBalance . "` 🟢\n";
 
                 $this->telegram->sendMessage([
                     'chat_id' => $this->chatId,
